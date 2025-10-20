@@ -1,10 +1,13 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
+@RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
@@ -13,13 +16,28 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return userService.getUser();
+    @GetMapping
+    public List<User> getAll() {
+        return userService.getAll();
     }
 
-    @GetMapping("/infouser")
-    public String info() {
-        return userService.getInfo();
+    @PostMapping
+    public User save(@RequestBody User user) {
+        return userService.save(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        userService.delete(id);
+    }
+
+    @GetMapping("/search")
+    public List<User> findByName(@RequestParam String name) {
+        return userService.findByName(name);
+    }
+
+    @GetMapping("/older-than/{age}")
+    public List<User> findOlderThan(@PathVariable int age) {
+        return userService.findOlderThan(age);
     }
 }
