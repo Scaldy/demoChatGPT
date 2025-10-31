@@ -9,11 +9,19 @@ import org.slf4j.LoggerFactory;
 @Service
 public class UsuarioService {
 
+    private final EmailService emailService;
+
     private static final Logger log = LoggerFactory.getLogger(UsuarioService.class);
     private final ApplicationEventPublisher publisher;
 
-    public UsuarioService(ApplicationEventPublisher publisher) {
+    public UsuarioService(EmailService emailService, ApplicationEventPublisher publisher) {
+        this.emailService = emailService;
         this.publisher = publisher;
+    }
+
+    public String registrar(String nombre) {
+        emailService.enviarCorreo(nombre + "@mail.com");
+        return "Registrado " + nombre;
     }
 
     public void registrarUsuario(String email, String nombre) {
