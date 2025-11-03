@@ -7,21 +7,21 @@ import org.mockito.Mockito;
 import org.springframework.context.ApplicationEventPublisher;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-public class UsuarioServiceTest {
+class UsuarioServiceTest {
 
     @Test
-    void testRegistro() {
+    void deberiaRegistrarYEnviarCorreo() {
+        EmailService emailMock = Mockito.mock(EmailService.class);
         ApplicationEventPublisher publisher = Mockito.mock(ApplicationEventPublisher.class);
-        EmailService mockEmail = Mockito.mock(EmailService.class);
-        String mail = "tubamar@hotmail.com";
 
-        UsuarioService service = new UsuarioService(mockEmail, publisher);
+        UsuarioService usuarioService = new UsuarioService(emailMock, publisher);
 
-        String resultado = service.registrarUsuario(mail,"Marcelo");
+        String resultado = usuarioService.registrar("Marcelo");
+
         assertEquals("Registrado Marcelo", resultado);
-
-        Mockito.verify(mockEmail).enviarCorreo(mail);
+        verify(emailMock).enviarCorreo("Marcelo@mail.com");
     }
 }
 
