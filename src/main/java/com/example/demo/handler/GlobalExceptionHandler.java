@@ -1,5 +1,6 @@
 package com.example.demo.handler;
 
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -22,5 +23,18 @@ public class GlobalExceptionHandler {
                 "error", "validation",
                 "details", errors
         );
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, Object> handleConstraintViolations(ConstraintViolationException ex) {
+        var errors = ex.getConstraintViolations()
+                .stream()
+                .map(v -> Map.of(
+                        "path", v.getPropertyPath().toString(),
+                        "message", v.getMessage()))
+                .toList();
+
+        return Map.of("error", "constraint", "details", errors);
     }
 }
